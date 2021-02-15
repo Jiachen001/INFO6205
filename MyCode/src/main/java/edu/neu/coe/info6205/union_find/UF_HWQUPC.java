@@ -8,6 +8,7 @@
 package edu.neu.coe.info6205.union_find;
 
 import java.util.Arrays;
+import java.util.Random;
 
 /**
  * Height-weighted Quick Union with Path Compression
@@ -81,6 +82,11 @@ public class UF_HWQUPC implements UF {
     public int find(int p) {
         validate(p);
         int root = p;
+        while (root != parent[root]) {
+            if(pathCompression)
+                doPathCompression(root);
+            root = parent[root];
+        }
         // TO BE IMPLEMENTED
         return root;
     }
@@ -169,6 +175,19 @@ public class UF_HWQUPC implements UF {
 
     private void mergeComponents(int i, int j) {
         // TO BE IMPLEMENTED make shorter root point to taller one
+        int iRoot = find(i);
+        int jRoot= find(j);
+        if (iRoot == jRoot) {
+            return;
+        }
+        if (height[iRoot] < height[jRoot]) {
+            updateParent(iRoot, jRoot);
+            updateHeight(jRoot, iRoot);
+        }
+        else  {
+            updateParent(jRoot, iRoot);
+            updateHeight(iRoot, jRoot);
+        }
     }
 
     /**
@@ -176,5 +195,33 @@ public class UF_HWQUPC implements UF {
      */
     private void doPathCompression(int i) {
         // TO BE IMPLEMENTED update parent to value of grandparent
+        parent[i] = parent[parent[i]];
+
+    }
+    public static int count(int n) {
+        UF_HWQUPC cal = new UF_HWQUPC(n);
+        int conNumber =0;
+        Random ran= new Random();
+        while(cal.count != 1) {
+            int p=ran.nextInt(n);
+            int q=ran.nextInt(n);
+            cal.union(p, q);
+            conNumber++;
+        }
+        return conNumber;
+    }
+    public static void main(String[] args) {
+        int n=100;
+        int times=100;
+        for(int i=0; i<50; i++) {
+            int sum =0;
+            for(int j=0; j<times; j++){
+                sum +=count(n);
+            }
+            sum =sum/times;
+            System.out.println(sum+ ","+ n);
+            n+=100;
+
+        }
     }
 }
