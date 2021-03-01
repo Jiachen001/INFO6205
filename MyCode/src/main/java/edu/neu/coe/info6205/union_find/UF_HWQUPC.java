@@ -8,6 +8,7 @@
 package edu.neu.coe.info6205.union_find;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -34,6 +35,7 @@ public class UF_HWQUPC implements UF {
      * @throws IllegalArgumentException if {@code n < 0}
      */
     public UF_HWQUPC(int n, boolean pathCompression) {
+        initN=n;
         count = n;
         parent = new int[n];
         height = new int[n];
@@ -62,6 +64,21 @@ public class UF_HWQUPC implements UF {
             System.out.printf("%d: %d, %d\n", i, parent[i], height[i]);
         }
     }
+
+    public void benchMarkUnionMerge(List<List<Integer>> lists){
+        count = initN;
+        parent = new int[count];
+        height = new int[count];
+        for (int i = 0; i < count; i++) {
+            parent[i] = i;
+            height[i] = 1;
+        }
+        for (List<Integer> list:lists){
+            mergeComponents(list.get(0),list.get(1));
+        }
+
+    }
+
 
     /**
      * Returns the number of components.
@@ -167,9 +184,10 @@ public class UF_HWQUPC implements UF {
     private int getParent(int i) {
         return parent[i];
     }
+    private int initN;
 
-    private final int[] parent;   // parent[i] = parent of i
-    private final int[] height;   // height[i] = height of subtree rooted at i
+    private  int[] parent;   // parent[i] = parent of i
+    private  int[] height;   // height[i] = height of subtree rooted at i
     private int count;  // number of components
     private boolean pathCompression;
 
